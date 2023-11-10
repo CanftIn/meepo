@@ -45,34 +45,22 @@ class Graph {
   }
 
   /// 执行图中所有节点的任务
-  void execute_tasks() const {
+  void execute_tasks() {
     std::lock_guard<std::mutex> lock(mutex_);
     // 检测循环依赖
     if (detect_cycle()) {
       throw std::runtime_error("Detected circular dependencies in the graph.");
     }
 
-    // 拓扑排序，确保任务按照依赖关系顺序执行
-    std::vector<std::shared_ptr<Node>> sorted_nodes;
-    topological_sort(sorted_nodes);
-
-    std::map<std::shared_ptr<Node>, std::thread> node_threads;
-
-    for (const auto& node : sorted_nodes) {
-      // 检查上游节点是否都已完成执行
-      for (const auto& upstream : node->get_upstream_nodes()) {
-        if (node_threads.find(upstream) != node_threads.end()) {
-          node_threads[upstream].join();
-        }
-      }
-
-      // 启动当前节点的线程执行任务
-      node_threads[node] = std::thread([node] { node->execute_task(); });
+    for (const auto& node : nodes_) {
+      // 为每个节点创建一个线程，无论它是否有上游节点
+      threads_.emplace_back([node]() { node->execute_task(); });
     }
 
-    // 等待所有线程执行完成
-    for (auto& pair : node_threads) {
-      pair.second.join();
+    for (auto& thread : threads_) {
+      if (thread.joinable()) {
+        thread.join();
+      }
     }
   }
 
@@ -172,6 +160,7 @@ class Graph {
 
   mutable std::mutex mutex_;
   std::vector<std::shared_ptr<Node>> nodes_;
+  std::vector<std::thread> threads_;
 };
 
 }  // namespace Scheduler
