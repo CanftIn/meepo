@@ -14,12 +14,14 @@ class Graph {
   Graph() = default;
 
   Graph(const Graph&) = delete;
+
   auto operator=(const Graph&) -> Graph& = delete;
 
   Graph(Graph&& other) noexcept {
     nodes_ = std::move(other.nodes_);
     other.nodes_.clear();
   }
+
   auto operator=(Graph&& other) noexcept -> Graph& {
     if (this != &other) {
       nodes_ = std::move(other.nodes_);
@@ -46,6 +48,11 @@ class Graph {
     for (const auto& node : nodes_) {
       execute_node_task(node.get());
     }
+  }
+
+  // 打印图的形状
+  void print() const {
+    // TODO
   }
 
  private:

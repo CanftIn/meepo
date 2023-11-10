@@ -2,6 +2,7 @@
 #define SCHEDULER_GRAPH_NODE_H
 
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include "Scheduler/Task/Task.h"
@@ -10,9 +11,10 @@ namespace Scheduler {
 
 class Node {
  public:
-  Node(int id, std::shared_ptr<Task> task) : id_(id), task_(std::move(task)) {}
+  Node(std::string name, std::shared_ptr<Task> task)
+      : name_(std::move(name)), task_(std::move(task)) {}
 
-  auto get_id() const -> int { return id_; }
+  auto get_name() const -> std::string { return name_; }
 
   void execute_task() const {
     if (task_) {
@@ -38,7 +40,9 @@ class Node {
   }
 
  private:
-  int id_;
+  // 节点名。
+  std::string name_;
+  // 任务。
   std::shared_ptr<Task> task_;
   // 上游节点。
   std::vector<std::shared_ptr<Node>> upstream_nodes_;

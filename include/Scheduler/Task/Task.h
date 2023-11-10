@@ -1,6 +1,7 @@
 #ifndef SCHEDULER_TASK_TASK_H
 #define SCHEDULER_TASK_TASK_H
 
+#include <functional>
 #include <iostream>
 #include <string>
 #include <utility>
@@ -14,23 +15,19 @@ class Task {
   virtual void execute() const = 0;
 };
 
-class SimpleTask : public Task {
+class FunctionTask : public Task {
  public:
-  explicit SimpleTask(std::string message) : message_(std::move(message)) {}
+  explicit FunctionTask(const std::function<void()>& callback)
+      : callback_(callback) {}
 
   void execute() const override {
-    std::cout << "Executing SimpleTask: " << message_ << '\n';
+    if (callback_) {
+      callback_();
+    }
   }
 
  private:
-  std::string message_;
-};
-
-class ComplexTask : public Task {
- public:
-  void execute() const override {
-    std::cout << "Executing ComplexTask" << '\n';
-  }
+  std::function<void()> callback_;
 };
 
 }  // namespace Scheduler
