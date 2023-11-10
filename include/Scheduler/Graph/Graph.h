@@ -29,7 +29,7 @@ class Graph {
   }
 
   /// 添加节点。
-  void add_node(std::unique_ptr<Node> node) {
+  void add_node(std::shared_ptr<Node> node) {
     std::lock_guard<std::mutex> lock(mutex_);
     nodes_.push_back(std::move(node));
   }
@@ -44,13 +44,23 @@ class Graph {
   void execute_tasks() const {
     std::lock_guard<std::mutex> lock(mutex_);
     for (const auto& node : nodes_) {
-      node->execute_task();
+      execute_node_task(node.get());
     }
   }
 
  private:
+  // 递归执行节点及其下游节点的任务
+  void execute_node_task(Node* node) const {
+    if (node) {
+      for (const auto& downstream : node->get_downstream_nodes()) {
+        execute_node_task(downstream.get());
+      }
+      node->execute_task();
+    }
+  }
+
   mutable std::mutex mutex_;
-  std::vector<std::unique_ptr<Node>> nodes_;
+  std::vector<std::shared_ptr<Node>> nodes_;
 };
 
 }  // namespace Scheduler
