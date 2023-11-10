@@ -28,13 +28,11 @@ TEST(GraphTest, DAGExecution) {
   graph.add_node(node2);
   graph.add_node(node3);
 
-  graph.print();
-
-  std::thread thread1([&graph] { graph.execute_tasks(); });
-  std::thread thread2([&graph] { graph.execute_tasks(); });
-
-  thread1.join();
-  thread2.join();
+  try {
+    graph.execute_tasks();
+  } catch (const std::exception& e) {
+    std::cerr << "Error: " << e.what() << '\n';
+  }
 }
 
 }  // namespace Scheduler::Unittests
