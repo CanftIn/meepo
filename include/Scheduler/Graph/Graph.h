@@ -2,28 +2,12 @@
 #define SCHEDULER_GRAPH_GRAPH_H
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
-#include "Scheduler/Task/Task.h"
+#include "Scheduler/Graph/Node.h"
 
 namespace Scheduler {
-
-class Node {
- public:
-  Node(int id, std::shared_ptr<Task> task) : id_(id), task_(std::move(task)) {}
-
-  auto get_id() const -> int { return id_; }
-
-  void execute_task() const {
-    if (task_) {
-      task_->execute();
-    }
-  }
-
- private:
-  int id_;
-  std::shared_ptr<Task> task_;
-};
 
 class Graph {
  public:
@@ -46,20 +30,26 @@ class Graph {
 
   /// 添加节点。
   void add_node(std::unique_ptr<Node> node) {
+    std::lock_guard<std::mutex> lock(mutex_);
     nodes_.push_back(std::move(node));
   }
 
   /// 获取图的大小（节点数量）
-  auto size() const -> std::size_t { return nodes_.size(); }
+  auto size() const -> std::size_t {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return nodes_.size();
+  }
 
   // 执行图中所有节点的任务
   void execute_tasks() const {
+    std::lock_guard<std::mutex> lock(mutex_);
     for (const auto& node : nodes_) {
       node->execute_task();
     }
   }
 
  private:
+  mutable std::mutex mutex_;
   std::vector<std::unique_ptr<Node>> nodes_;
 };
 

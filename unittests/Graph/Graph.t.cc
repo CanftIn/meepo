@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include <thread>
+
 namespace Scheduler::Unittests {
 
 TEST(GraphTest, GraphExecution) {
@@ -16,7 +18,11 @@ TEST(GraphTest, GraphExecution) {
   graph.add_node(std::move(node1));
   graph.add_node(std::move(node2));
 
-  graph.execute_tasks();
+  std::thread thread1([&graph] { graph.execute_tasks(); });
+  std::thread thread2([&graph] { graph.execute_tasks(); });
+
+  thread1.join();
+  thread2.join();
 }
 
 }  // namespace Scheduler::Unittests
