@@ -7,13 +7,16 @@
 namespace Scheduler::Unittests {
 
 TEST(GraphTest, DAGExecution) {
-  auto task1 = make_function_task({[] { std::cout << "task1.1" << '\n'; },
-                                   [] { std::cout << "task1.2" << '\n'; }});
+  auto task1 =
+      make_function_serial_task({[] { std::cout << "task1.1" << '\n'; },
+                                 [] { std::cout << "task1.2" << '\n'; }});
 
-  auto task2 = make_function_task({[] { std::cout << "task2.1" << '\n'; },
-                                   [] { std::cout << "task2.2" << '\n'; }});
+  auto task2 =
+      make_function_serial_task({[] { std::cout << "task2.1" << '\n'; },
+                                 [] { std::cout << "task2.2" << '\n'; }});
 
-  auto task3 = make_function_task({[] { std::cout << "task3.1" << '\n'; },
+  auto task3 =
+      make_function_parallel_task({[] { std::cout << "task3.1" << '\n'; },
                                    [] { std::cout << "task3.2" << '\n'; }});
 
   auto node1 = std::make_shared<Node>("node1", task1);
@@ -30,11 +33,7 @@ TEST(GraphTest, DAGExecution) {
   graph.add_node(node2);
   graph.add_node(node3);
 
-  try {
-    graph.execute_tasks();
-  } catch (const std::exception& e) {
-    std::cerr << "Error: " << e.what() << '\n';
-  }
+  graph.execute_tasks();
 }
 
 }  // namespace Scheduler::Unittests

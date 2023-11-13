@@ -70,7 +70,7 @@ class FunctionTask : public Task {
   std::function<void()> callback_;
 };
 
-inline auto make_function_task(
+inline auto make_function_serial_task(
     const std::initializer_list<std::function<void()>>& callbacks)
     -> std::shared_ptr<Task> {
   std::vector<std::shared_ptr<Task>> tasks;
@@ -78,6 +78,16 @@ inline auto make_function_task(
     tasks.push_back(std::make_shared<FunctionTask>(callback));
   }
   return std::make_shared<SerialTask>(tasks);
+}
+
+inline auto make_function_parallel_task(
+    const std::initializer_list<std::function<void()>>& callbacks)
+    -> std::shared_ptr<Task> {
+  std::vector<std::shared_ptr<Task>> tasks;
+  for (const auto& callback : callbacks) {
+    tasks.push_back(std::make_shared<FunctionTask>(callback));
+  }
+  return std::make_shared<ParallelTask>(tasks);
 }
 
 }  // namespace Scheduler
