@@ -12,7 +12,7 @@ class Task {
  public:
   virtual ~Task() = default;
 
-  virtual void execute() const = 0;
+  virtual void process() const = 0;
 };
 
 class FunctionTask : public Task {
@@ -20,7 +20,7 @@ class FunctionTask : public Task {
   explicit FunctionTask(const std::function<void()>& callback)
       : callback_(callback) {}
 
-  void execute() const override {
+  void process() const override {
     if (callback_) {
       callback_();
     }

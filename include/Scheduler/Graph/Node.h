@@ -21,7 +21,7 @@ class Node {
   void execute_task() const {
     wait_upstreams();
     if (task_) {
-      task_->execute();
+      task_->process();
     }
     notify_downstreams();
   }
