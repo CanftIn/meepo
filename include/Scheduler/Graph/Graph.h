@@ -131,33 +131,6 @@ class Graph {
     return false;
   }
 
-  void topological_sort(
-      std::vector<std::shared_ptr<Node>>& sorted_nodes) const {
-    std::unordered_map<std::string, bool> visited;
-
-    for (const auto& node : nodes_) {
-      visit(node, sorted_nodes, visited);
-    }
-
-    std::reverse(sorted_nodes.begin(), sorted_nodes.end());
-  }
-
-  void visit(std::shared_ptr<Node> node,
-             std::vector<std::shared_ptr<Node>>& sorted_nodes,
-             std::unordered_map<std::string, bool>& visited) const {
-    if (visited.find(node->get_name()) != visited.end()) {
-      return;
-    }
-
-    visited[node->get_name()] = true;
-
-    for (const auto& upstream : node->get_upstream_nodes()) {
-      visit(upstream, sorted_nodes, visited);
-    }
-
-    sorted_nodes.push_back(node);
-  }
-
   mutable std::mutex mutex_;
   std::vector<std::shared_ptr<Node>> nodes_;
   std::vector<std::thread> threads_;
