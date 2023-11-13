@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-#include "Scheduler/Graph/Aspect.h"
+#include "Scheduler/Aspect/Aspect.h"
 #include "Scheduler/Task/Task.h"
 
 namespace Scheduler {

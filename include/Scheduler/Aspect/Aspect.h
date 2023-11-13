@@ -1,5 +1,9 @@
-#ifndef SCHEDULER_GRAPH_ASPECT_H
-#define SCHEDULER_GRAPH_ASPECT_H
+#ifndef SCHEDULER_ASPECT_ASPECT_H
+#define SCHEDULER_ASPECT_ASPECT_H
+
+#include <chrono>
+#include <iostream>
+#include <map>
 
 namespace Scheduler {
 
@@ -16,4 +20,4 @@ class Aspect {
 
 }  // namespace Scheduler
 
-#endif  // SCHEDULER_GRAPH_ASPECT_H
+#endif  // SCHEDULER_ASPECT_ASPECT_H

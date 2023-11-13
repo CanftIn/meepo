@@ -2,7 +2,8 @@
 
 #include <gtest/gtest.h>
 
-#include <thread>
+#include "Scheduler/Aspect/LogAspect.h"
+#include "Scheduler/Aspect/TimeAspect.h"
 
 namespace Scheduler::Unittests {
 
@@ -27,6 +28,12 @@ TEST(GraphTest, DAGExecution) {
   node2->add_downstream_node(node3);
   node3->add_upstream_node(node1);
   node3->add_upstream_node(node2);
+
+  auto timing_aspect = std::make_unique<TimeAspect>();
+  auto logging_aspect = std::make_unique<LogAspect>();
+
+  node1->set_aspect(std::move(timing_aspect));
+  node2->set_aspect(std::move(logging_aspect));
 
   Graph graph;
   graph.add_node(node1);
