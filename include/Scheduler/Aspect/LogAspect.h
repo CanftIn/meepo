@@ -13,10 +13,12 @@ namespace Scheduler {
 class LogAspect : public Aspect {
  public:
   void before(const Node& node) override {
+    std::lock_guard<std::mutex> lock(aspect_mutex);
     std::cout << "Starting node: " << node.get_name() << '\n';
   }
 
   void after(const Node& node) override {
+    std::lock_guard<std::mutex> lock(aspect_mutex);
     std::cout << "Finished node: " << node.get_name() << '\n';
   }
 };

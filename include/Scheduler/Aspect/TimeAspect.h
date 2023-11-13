@@ -13,10 +13,12 @@ namespace Scheduler {
 class TimeAspect : public Aspect {
  public:
   void before(const Node& node) override {
+    std::lock_guard<std::mutex> lock(aspect_mutex);
     start_times_[&node] = std::chrono::high_resolution_clock::now();
   }
 
   void after(const Node& node) override {
+    std::lock_guard<std::mutex> lock(aspect_mutex);
     auto end_time = std::chrono::high_resolution_clock::now();
     auto start_time = start_times_[&node];
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(

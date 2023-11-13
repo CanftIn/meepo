@@ -29,11 +29,11 @@ TEST(GraphTest, DAGExecution) {
   node3->add_upstream_node(node1);
   node3->add_upstream_node(node2);
 
-  auto timing_aspect = std::make_unique<TimeAspect>();
-  auto logging_aspect = std::make_unique<LogAspect>();
+  auto time_aspect = std::make_unique<TimeAspect>();
+  auto log_aspect = std::make_unique<LogAspect>();
 
-  node1->set_aspect(std::move(timing_aspect));
-  node2->set_aspect(std::move(logging_aspect));
+  node1->set_aspect(std::move(time_aspect));
+  node2->set_aspect(std::move(log_aspect));
 
   Graph graph;
   graph.add_node(node1);

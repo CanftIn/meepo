@@ -1,9 +1,7 @@
 #ifndef SCHEDULER_ASPECT_ASPECT_H
 #define SCHEDULER_ASPECT_ASPECT_H
 
-#include <chrono>
-#include <iostream>
-#include <map>
+#include <mutex>
 
 namespace Scheduler {
 
@@ -17,6 +15,9 @@ class Aspect {
   virtual void before(const Node& node) = 0;
   virtual void after(const Node& node) = 0;
 };
+
+
+std::mutex aspect_mutex;
 
 }  // namespace Scheduler
 
