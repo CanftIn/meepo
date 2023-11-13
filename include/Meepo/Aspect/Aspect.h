@@ -1,9 +1,9 @@
-#ifndef SCHEDULER_ASPECT_ASPECT_H
-#define SCHEDULER_ASPECT_ASPECT_H
+#ifndef MEEPO_ASPECT_ASPECT_H
+#define MEEPO_ASPECT_ASPECT_H
 
 #include <mutex>
 
-namespace Scheduler {
+namespace Meepo {
 
 class Node;
 
@@ -19,6 +19,6 @@ class Aspect {
 
 std::mutex aspect_mutex;
 
-}  // namespace Scheduler
+}  // namespace Meepo
 
-#endif  // SCHEDULER_ASPECT_ASPECT_H
+#endif  // MEEPO_ASPECT_ASPECT_H

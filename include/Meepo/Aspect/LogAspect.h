@@ -1,14 +1,14 @@
-#ifndef SCHEDULER_ASPECT_LOG_ASPECT_H
-#define SCHEDULER_ASPECT_LOG_ASPECT_H
+#ifndef MEEPO_ASPECT_LOG_ASPECT_H
+#define MEEPO_ASPECT_LOG_ASPECT_H
 
 #include <chrono>
 #include <iostream>
 #include <map>
 
-#include "Scheduler/Aspect/Aspect.h"
-#include "Scheduler/Graph/Node.h"
+#include "Meepo/Aspect/Aspect.h"
+#include "Meepo/Graph/Node.h"
 
-namespace Scheduler {
+namespace Meepo {
 
 class LogAspect : public Aspect {
  public:
@@ -23,6 +23,6 @@ class LogAspect : public Aspect {
   }
 };
 
-}  // namespace Scheduler
+}  // namespace Meepo
 
-#endif  // SCHEDULER_ASPECT_LOG_ASPECT_H
+#endif  // MEEPO_ASPECT_LOG_ASPECT_H

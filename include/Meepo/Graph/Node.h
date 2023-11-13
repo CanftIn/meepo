@@ -1,5 +1,5 @@
-#ifndef SCHEDULER_GRAPH_NODE_H
-#define SCHEDULER_GRAPH_NODE_H
+#ifndef MEEPO_GRAPH_NODE_H
+#define MEEPO_GRAPH_NODE_H
 
 #include <condition_variable>
 #include <memory>
@@ -7,10 +7,10 @@
 #include <utility>
 #include <vector>
 
-#include "Scheduler/Aspect/Aspect.h"
-#include "Scheduler/Task/Task.h"
+#include "Meepo/Aspect/Aspect.h"
+#include "Meepo/Task/Task.h"
 
-namespace Scheduler {
+namespace Meepo {
 
 class Node {
  public:
@@ -90,6 +90,6 @@ class Node {
   mutable int upstream_completed_ = 0;
 };
 
-}  // namespace Scheduler
+}  // namespace Meepo
 
-#endif  // SCHEDULER_GRAPH_NODE_H
+#endif  // MEEPO_GRAPH_NODE_H

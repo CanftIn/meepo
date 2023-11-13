@@ -1,5 +1,5 @@
-#ifndef SCHEDULER_GRAPH_GRAPH_H
-#define SCHEDULER_GRAPH_GRAPH_H
+#ifndef MEEPO_GRAPH_GRAPH_H
+#define MEEPO_GRAPH_GRAPH_H
 
 #include <map>
 #include <memory>
@@ -7,9 +7,9 @@
 #include <thread>
 #include <vector>
 
-#include "Scheduler/Graph/Node.h"
+#include "Meepo/Graph/Node.h"
 
-namespace Scheduler {
+namespace Meepo {
 
 class Graph {
  public:
@@ -136,6 +136,6 @@ class Graph {
   std::vector<std::thread> threads_;
 };
 
-}  // namespace Scheduler
+}  // namespace Meepo
 
-#endif  // SCHEDULER_GRAPH_GRAPH_H
+#endif  // MEEPO_GRAPH_GRAPH_H

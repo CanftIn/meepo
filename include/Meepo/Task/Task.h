@@ -1,5 +1,5 @@
-#ifndef SCHEDULER_TASK_TASK_H
-#define SCHEDULER_TASK_TASK_H
+#ifndef MEEPO_TASK_TASK_H
+#define MEEPO_TASK_TASK_H
 
 #include <functional>
 #include <iostream>
@@ -8,7 +8,7 @@
 #include <thread>
 #include <utility>
 
-namespace Scheduler {
+namespace Meepo {
 
 class Task {
  public:
@@ -90,6 +90,6 @@ inline auto make_function_parallel_task(
   return std::make_shared<ParallelTask>(tasks);
 }
 
-}  // namespace Scheduler
+}  // namespace Meepo
 
-#endif  // SCHEDULER_TASK_TASK_H
+#endif  // MEEPO_TASK_TASK_H

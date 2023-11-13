@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(
-  scheduler
+  meepo
   VERSION 0.0.1
   LANGUAGES C CXX
 )
@@ -14,7 +14,7 @@ set(project_version "${${PROJECT_NAME}_VERSION}")
 
 message(STATUS "Project '${PROJECT_NAME}', version: '${project_version}'")
 
-option(SCHEDULER_OPT_BUILD_UNITTESTS "Build all scheduler unittests" ON)
+option(MEEPO_OPT_BUILD_UNITTESTS "Build all meepo unittests" ON)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   # for debug of stl structure while using clang compile
@@ -39,15 +39,14 @@ find_package(GTest REQUIRED CONFIG)
 # lib make begin
 #------------------------------------------------------------
 
-set(FLOW_SRCS)
+set(MEEPO_SRCS)
 
 set(STATIC_LIB_NAME ${PROJECT_NAME})
 
-# flowLang lib
-file(GLOB_RECURSE FLOW_SRCS
+file(GLOB_RECURSE MEEPO_SRCS
     lib/*/*.cc
   )
-add_library(${STATIC_LIB_NAME} STATIC ${FLOW_SRCS})
+add_library(${STATIC_LIB_NAME} STATIC ${MEEPO_SRCS})
 target_link_libraries(${STATIC_LIB_NAME})
 target_include_directories(${STATIC_LIB_NAME}
   PUBLIC
@@ -57,6 +56,6 @@ target_include_directories(${STATIC_LIB_NAME}
 # lib make end
 #------------------------------------------------------------
 
-if (SCHEDULER_OPT_BUILD_UNITTESTS)
+if (MEEPO_OPT_BUILD_UNITTESTS)
   add_subdirectory(unittests #[[EXCLUDE_FROM_ALL]])
 endif()

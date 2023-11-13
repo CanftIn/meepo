@@ -1,11 +1,11 @@
-#include "Scheduler/Graph/Graph.h"
+#include "Meepo/Graph/Graph.h"
 
 #include <gtest/gtest.h>
 
-#include "Scheduler/Aspect/LogAspect.h"
-#include "Scheduler/Aspect/TimeAspect.h"
+#include "Meepo/Aspect/LogAspect.h"
+#include "Meepo/Aspect/TimeAspect.h"
 
-namespace Scheduler::Unittests {
+namespace Meepo::Unittests {
 
 TEST(GraphTest, DAGExecution) {
   auto task1 =
@@ -43,4 +43,4 @@ TEST(GraphTest, DAGExecution) {
   graph.execute_tasks();
 }
 
-}  // namespace Scheduler::Unittests
+}  // namespace Meepo::Unittests
