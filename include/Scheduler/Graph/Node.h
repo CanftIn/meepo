@@ -7,6 +7,7 @@
 #include <utility>
 #include <vector>
 
+#include "Scheduler/Graph/Aspect.h"
 #include "Scheduler/Task/Task.h"
 
 namespace Scheduler {
@@ -19,11 +20,19 @@ class Node {
   auto get_name() const -> std::string { return name_; }
 
   void execute_task() const {
+    if (aspect_) {
+      aspect_->before(*this);
+    }
+
     wait_upstreams();
     if (task_) {
       task_->process();
     }
     notify_downstreams();
+
+    if (aspect_) {
+      aspect_->after(*this);
+    }
   }
 
   void add_upstream_node(std::shared_ptr<Node> node) {
@@ -59,6 +68,10 @@ class Node {
              [this] { return upstream_completed_ == upstream_nodes_.size(); });
   }
 
+  void set_aspect(std::unique_ptr<Aspect> aspect) {
+    aspect_ = std::move(aspect);
+  }
+
  private:
   // 节点名。
   std::string name_;
@@ -68,6 +81,8 @@ class Node {
   std::vector<std::shared_ptr<Node>> upstream_nodes_;
   // 下游节点。
   std::vector<std::shared_ptr<Node>> downstream_nodes_;
+  // 切面动作
+  std::unique_ptr<Aspect> aspect_;
   // 同步相关变量。
   mutable std::mutex mutex_;
   mutable std::condition_variable cv_;
