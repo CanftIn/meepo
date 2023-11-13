@@ -7,12 +7,14 @@
 namespace Scheduler::Unittests {
 
 TEST(GraphTest, DAGExecution) {
-  std::shared_ptr<Task> task1 =
-      std::make_shared<FunctionTask>([] { std::cout << "task1" << '\n'; });
-  std::shared_ptr<Task> task2 =
-      std::make_shared<FunctionTask>([] { std::cout << "task2" << '\n'; });
-  std::shared_ptr<Task> task3 =
-      std::make_shared<FunctionTask>([] { std::cout << "task3" << '\n'; });
+  auto task1 = make_function_task({[] { std::cout << "task1.1" << '\n'; },
+                                   [] { std::cout << "task1.2" << '\n'; }});
+
+  auto task2 = make_function_task({[] { std::cout << "task2.1" << '\n'; },
+                                   [] { std::cout << "task2.2" << '\n'; }});
+
+  auto task3 = make_function_task({[] { std::cout << "task3.1" << '\n'; },
+                                   [] { std::cout << "task3.2" << '\n'; }});
 
   auto node1 = std::make_shared<Node>("node1", task1);
   auto node2 = std::make_shared<Node>("node2", task2);
