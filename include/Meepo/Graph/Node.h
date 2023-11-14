@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Meepo/Aspect/Aspect.h"
+#include "Meepo/Graph/Parameter.h"
 #include "Meepo/Task/Task.h"
 
 namespace Meepo {
@@ -19,20 +20,34 @@ class Node {
 
   auto get_name() const -> std::string { return name_; }
 
-  void execute_task() const {
+  void execute_task() {
+    wait_upstreams();
+
+    Parameter params_copy;
+
+    // 合并上游节点的参数
+    for (const auto& upstream : upstream_nodes_) {
+      const auto& upstream_params = upstream->get_parameter();
+      for (const auto& param : upstream_params) {
+        params_copy.set(param.first, param.second);
+      }
+    }
+
     if (aspect_) {
       aspect_->before(*this);
     }
 
-    wait_upstreams();
     if (task_) {
-      task_->process();
+      task_->process(params_copy);
     }
-    notify_downstreams();
 
     if (aspect_) {
       aspect_->after(*this);
     }
+
+    params_ = params_copy;
+
+    notify_downstreams();
   }
 
   void add_upstream_node(std::shared_ptr<Node> node) {
@@ -72,6 +87,16 @@ class Node {
     aspect_ = std::move(aspect);
   }
 
+  auto get_parameter() const -> Parameter {
+    std::lock_guard<std::mutex> guard(mutex_);
+    return params_;
+  }
+
+  void set_parameter(const Parameter& params) {
+    std::lock_guard<std::mutex> guard(mutex_);
+    params_ = params;
+  }
+
  private:
   // 节点名。
   std::string name_;
@@ -83,6 +108,8 @@ class Node {
   std::vector<std::shared_ptr<Node>> downstream_nodes_;
   // 切面动作
   std::unique_ptr<Aspect> aspect_;
+  // 节点参数
+  Parameter params_;
   // 同步相关变量。
   mutable std::mutex mutex_;
   mutable std::condition_variable cv_;

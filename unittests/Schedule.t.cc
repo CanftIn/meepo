@@ -4,7 +4,7 @@
 
 namespace Meepo::Unittests {
 
-TEST(GraphTest, DAGExecution) {
+TEST(GraphTest, Pipeline) {
   auto task1 =
       make_function_serial_task({[] { std::cout << "task1.1" << '\n'; },
                                  [] { std::cout << "task1.2" << '\n'; }});

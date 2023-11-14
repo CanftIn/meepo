@@ -7,6 +7,9 @@
 #include <string>
 #include <thread>
 #include <utility>
+#include <variant>
+
+#include "Meepo/Graph/Parameter.h"
 
 namespace Meepo {
 
@@ -14,7 +17,7 @@ class Task {
  public:
   virtual ~Task() = default;
 
-  virtual void process() const = 0;
+  virtual void process(Parameter& params) const = 0;
 };
 
 class SerialTask : public Task {
@@ -22,9 +25,9 @@ class SerialTask : public Task {
   SerialTask(const std::vector<std::shared_ptr<Task>>& tasks)  // NOLINT(*)
       : tasks_(tasks) {}
 
-  void process() const override {
+  void process(Parameter& params) const override {
     for (const auto& task : tasks_) {
-      task->process();
+      task->process(params);
     }
   }
 
@@ -37,11 +40,11 @@ class ParallelTask : public Task {
   ParallelTask(const std::vector<std::shared_ptr<Task>>& tasks)  // NOLINT(*)
       : tasks_(tasks) {}
 
-  void process() const override {
+  void process(Parameter& params) const override {
     std::vector<std::thread> threads;
     threads.reserve(tasks_.size());
     for (const auto& task : tasks_) {
-      threads.emplace_back([&task]() { task->process(); });
+      threads.emplace_back([&task, &params]() { task->process(params); });
     }
 
     for (auto& thread : threads) {
@@ -57,21 +60,36 @@ class ParallelTask : public Task {
 
 class FunctionTask : public Task {
  public:
-  explicit FunctionTask(std::function<void()> callback)
-      : callback_(std::move(callback)) {}
+  using Callback = std::function<void()>;
+  using ParamCallback = std::function<void(const Parameter&)>;
+  using ParamReturnCallback = std::function<Parameter(const Parameter&)>;
 
-  void process() const override {
-    if (callback_) {
-      callback_();
-    }
+  using TaskVariant =
+      std::variant<Callback, ParamCallback, ParamReturnCallback>;
+
+  explicit FunctionTask(TaskVariant task) : task_(std::move(task)) {}
+
+  void process(Parameter& params) const override {
+    std::visit(
+        [&params](auto&& callback) {
+          using T = std::decay_t<decltype(callback)>;
+          if constexpr (std::is_same_v<T, Callback>) {
+            callback();
+          } else if constexpr (std::is_same_v<T, ParamCallback>) {
+            callback(params);
+          } else if constexpr (std::is_same_v<T, ParamReturnCallback>) {
+            params = callback(params);
+          }
+        },
+        task_);
   }
 
  private:
-  std::function<void()> callback_;
+  TaskVariant task_;
 };
 
 inline auto make_function_serial_task(
-    const std::initializer_list<std::function<void()>>& callbacks)
+    const std::initializer_list<FunctionTask::TaskVariant>& callbacks)
     -> std::shared_ptr<Task> {
   std::vector<std::shared_ptr<Task>> tasks;
   for (const auto& callback : callbacks) {
@@ -81,7 +99,7 @@ inline auto make_function_serial_task(
 }
 
 inline auto make_function_parallel_task(
-    const std::initializer_list<std::function<void()>>& callbacks)
+    const std::initializer_list<FunctionTask::TaskVariant>& callbacks)
     -> std::shared_ptr<Task> {
   std::vector<std::shared_ptr<Task>> tasks;
   for (const auto& callback : callbacks) {
