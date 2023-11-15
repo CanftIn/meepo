@@ -39,18 +39,20 @@ find_package(GTest REQUIRED CONFIG)
 # lib make begin
 #------------------------------------------------------------
 
+include_directories(include)
+
 set(MEEPO_SRCS)
 
 set(STATIC_LIB_NAME ${PROJECT_NAME})
 
-file(GLOB_RECURSE MEEPO_SRCS
-    lib/*/*.cc
-  )
-add_library(${STATIC_LIB_NAME} STATIC ${MEEPO_SRCS})
-target_link_libraries(${STATIC_LIB_NAME})
-target_include_directories(${STATIC_LIB_NAME}
-  PUBLIC
-  ${CMAKE_SOURCE_DIR}/include)
+# file(GLOB_RECURSE MEEPO_SRCS
+#     lib/*/*.cc
+#   )
+# add_library(${STATIC_LIB_NAME} STATIC ${MEEPO_SRCS})
+# target_link_libraries(${STATIC_LIB_NAME})
+# target_include_directories(${STATIC_LIB_NAME}
+#   PUBLIC
+#   ${CMAKE_SOURCE_DIR}/include)
 
 #------------------------------------------------------------
 # lib make end

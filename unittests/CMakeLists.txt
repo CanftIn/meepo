@@ -8,7 +8,7 @@ foreach(FILE_PATH ${UNITTESTS_LIST})
       GTest::gtest
       GTest::gtest_main
       GTest::gmock_main
-      meepo
+      # meepo
     )
   add_test(${FILE_NAME} ${FILE_NAME})
 endforeach()
