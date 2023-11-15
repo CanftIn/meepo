@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Meepo/Graph/Node.h"
+#include "Meepo/Executor/Executor.h"
 
 namespace Meepo {
 
@@ -52,15 +53,9 @@ class Graph {
       throw std::runtime_error("Detected circular dependencies in the graph.");
     }
 
+    Executor& executor = Executor::get_instance();
     for (const auto& node : nodes_) {
-      // 为每个节点创建一个线程，无论它是否有上游节点
-      threads_.emplace_back([node]() { node->execute_task(); });
-    }
-
-    for (auto& thread : threads_) {
-      if (thread.joinable()) {
-        thread.join();
-      }
+      executor.submit(node);
     }
   }
 
